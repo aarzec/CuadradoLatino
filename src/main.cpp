@@ -20,23 +20,19 @@ bool isSafe(int row, int col, int value, const std::vector<std::vector<int>>& gr
 
 void solveLatinSquare(int n, int row, int col, std::vector<std::vector<int>>& grid, std::vector<std::vector<std::vector<int>>>& solutions) {
     if (row == n) {
-        solutions.push_back(grid);  // Store the current valid solution
+        solutions.push_back(grid);
         return;
     }
 
     if (col == n) {
-        solveLatinSquare(n, row + 1, 0, grid, solutions);  // Move to the next row
+        solveLatinSquare(n, row + 1, 0, grid, solutions);
         return;
     }
 
     for (int value = 1; value <= n; ++value) {
         if (isSafe(row, col, value, grid, n)) {
             grid[row][col] = value;
-
-            // Recur to fill the next cell
             solveLatinSquare(n, row, col + 1, grid, solutions);
-
-            // Backtrack
             grid[row][col] = 0;
         }
     }
@@ -44,24 +40,20 @@ void solveLatinSquare(int n, int row, int col, std::vector<std::vector<int>>& gr
 
 void findLatinSquare(int n, int row, std::vector<std::vector<int>>& grid, std::vector<std::vector<std::vector<int>>>& solutions, std::vector<bool>& usedInRow, std::vector<std::vector<bool>>& usedInCol) {
     if (row == n) {
-        // All rows are filled, store the solution
         solutions.push_back(grid);
         return;
     }
 
-    // Try placing each number from 1 to n in this row
     for (int col = 0; col < n; ++col) {
         for (int value = 1; value <= n; ++value) {
             if (!usedInRow[row * n + value - 1] && !usedInCol[col][value - 1]) {
-                // Place the value
+
                 grid[row][col] = value;
                 usedInRow[row * n + value - 1] = true;
                 usedInCol[col][value - 1] = true;
 
-                // Recur to the next row
                 findLatinSquare(n, row + 1, grid, solutions, usedInRow, usedInCol);
 
-                // Backtrack
                 usedInRow[row * n + value - 1] = false;
                 usedInCol[col][value - 1] = false;
                 grid[row][col] = 0;
@@ -71,8 +63,8 @@ void findLatinSquare(int n, int row, std::vector<std::vector<int>>& grid, std::v
 }
 
 std::vector<std::vector<std::vector<int>>> generateAllLatinSquares(int n) {
-    std::vector<std::vector<int>> grid(n, std::vector<int>(n, 0));  // Initialize empty grid
-    std::vector<std::vector<std::vector<int>>> solutions;  // To store all solutions
+    std::vector<std::vector<int>> grid(n, std::vector<int>(n, 0));
+    std::vector<std::vector<std::vector<int>>> solutions;
     solveLatinSquare(n, 0, 0, grid, solutions);
     return solutions;
 }
